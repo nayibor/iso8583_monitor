@@ -8,14 +8,16 @@ defmodule Iso8583MonitorWeb.UserRegistrationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Register for an account
+        Register New User
+	<!--
         <:subtitle>
           Already registered?
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
             Log in
           </.link>
           to your account now.
-        </:subtitle>
+          </:subtitle>
+	-->
       </.header>
 
       <.simple_form
@@ -24,7 +26,7 @@ defmodule Iso8583MonitorWeb.UserRegistrationLive do
         phx-submit="save"
         phx-change="validate"
         phx-trigger-action={@trigger_submit}
-        action={~p"/users/log_in?_action=registered"}
+        action={~p"/users/log_in?_action=registered_user_internal"}
         method="post"
       >
         <.error :if={@check_errors}>

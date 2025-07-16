@@ -1,15 +1,13 @@
 # Iso8583Monitor
 
 
-This application is for an opensource transaction monitoring system.
+This application is a system for montoring iso8583 transactions in real time,tagging them and viewing their status in real time on web browsers.
 
-This system receives iso 8583 messages from diverse sources on  a tcp-ip server.
-
-It then extracts the iso 8583 message from the tcp server
+This system receives iso 8583 messages from diverse sources on  a tcp-ip server also an interface server infinancial transaction processing.
 
 it then passes the message through a filter using rules written in lua via the excellent [luerl](https://github.com/rvirding/luerl) erlang package
 
-It then forwards matched messages to a websocket server for distrubition to various user browsers where the transactions are being monitored. 
+It then forwards the messages which can be colour tagged if a rule matches to a websocket server for distribution to various user browsers where the tagged and normal transactions can be viewed. 
 
 The purpose of this application is to receive real time feedback on status of  transactions so that quick actions can be taken as opposed to polling of the database or other non real time means of monitoring.
 
@@ -19,15 +17,14 @@ The purpose of this application is to receive real time feedback on status of  t
 Backend web application/mis system for:
 
 * creating,reading,updating users
-* performing access management for users
 * for creating rules which represent a filter for messages
-* for adding and removing users from the rules 
+* for creating endpoints which receive transactions
 
 Tcp Server for 
 
 * receiving and parsing iso messages
 * pass message through rule system to find if message matches rule .eg. is it a decline,balance enquiry,etc..
-* sending parsed messages to websocket/email user channel for distribution based on active rule which match
+* forwarding messages to outbound channel
 
 Web application,rule engine and tcp server built using below:
 * [phoenix](https://www.phoenixframework.org/) elixir web framework
