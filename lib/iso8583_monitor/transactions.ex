@@ -7,7 +7,8 @@ defmodule Iso8583Monitor.Transactions do
   alias Iso8583Monitor.Repo
 
   alias Iso8583Monitor.Transactions.Rule
-
+  alias Iso8583Monitor.Utils
+  
   @doc """
   Returns the list of rules.
 
@@ -17,9 +18,17 @@ defmodule Iso8583Monitor.Transactions do
       [%Rule{}, ...]
 
   """
-  def list_rules do
-    Repo.all(Rule)
+  def list_rules(params \\ %{name: "",limit: Utils.get_page_size(),offset: Utils.get_offset(1)}) do
+    limit = params.limit
+    offset = params.offset
+    name = params.name
+    search_string = "%#{name}%" 
+    Repo.all(from r in Rule,limit: ^limit,offset: ^offset,order_by: [desc: :id],where:  ilike(field(r,:name), ^search_string))    
   end
+  
+  # def list_rules do
+  #   Repo.all(Rule)
+  # end
 
   @doc """
   Gets a single rule.

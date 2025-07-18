@@ -671,4 +671,47 @@ defmodule Iso8583MonitorWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  @doc """
+  Renders a set of pagination links
+  """
+  attr :page, :integer, required: true
+  attr :next_page_show, :boolean, required: true
+  def paginate(%{page: page,next_page_show: next_page_show} = assigns) do
+    case {page,next_page_show} do
+      {1,true}  ## this is for the first page of a multi-page resultset 
+	->
+        ~H"""
+            <.link phx-click={JS.push("paginate", value: %{page: @page + 1})}
+            class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
+            <.icon name="hero-chevron-double-right"  />
+            </.link>
+            """
+      {1,false} ## this is for the first page of a single-page resultset 
+        ->
+	~H"""
+	"""
+      {_,true}  ## this is for the middle pages of a multi-page resultset 
+	->
+        ~H"""
+            <.link phx-click={JS.push("paginate", value: %{page: @page - 1})}
+            class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
+            <.icon name="hero-chevron-double-left"  />
+            </.link>
+            <.link phx-click={JS.push("paginate", value: %{page: @page + 1})}
+            class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
+            <.icon name="hero-chevron-double-right"  />
+            </.link>
+            """
+	{_,false} ## this is for the last page of a multi-page resultset
+	->
+        ~H"""
+            <.link phx-click={JS.push("paginate", value: %{page: @page - 1})}
+            class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
+            <.icon name="hero-chevron-double-left"  />
+            </.link>
+            """
+    end
+  end
+  
 end
