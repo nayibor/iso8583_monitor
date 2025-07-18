@@ -1,0 +1,45 @@
+<.header>
+  Listing Rules
+  <:actions>
+    <.link patch={~p"/rules/new"}>
+      <.button>New Rule</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="rules"
+  rows={@streams.rules}
+  row_click={fn {_id, rule} -> JS.navigate(~p"/rules/#{rule}") end}
+>
+  <:col :let={{_id, rule}} label="Name">{rule.name}</:col>
+  <:col :let={{_id, rule}} label="Description">{rule.description}</:col>
+  <:col :let={{_id, rule}} label="Expression">**</:col>
+  <:col :let={{_id, rule}} label="Tag">{rule.tag}</:col>
+  <:col :let={{_id, rule}} label="Status">{rule.status}</:col>
+  <:action :let={{_id, rule}}>
+    <div class="sr-only">
+      <.link navigate={~p"/rules/#{rule}"}>Show</.link>
+    </div>
+    <.link patch={~p"/rules/#{rule}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, rule}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: rule.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="rule-modal" show on_cancel={JS.patch(~p"/rules")}>
+  <.live_component
+    module={Iso8583MonitorWeb.RuleLive.FormComponent}
+    id={@rule.id || :new}
+    title={@page_title}
+    action={@live_action}
+    rule={@rule}
+    patch={~p"/rules"}
+  />
+</.modal>

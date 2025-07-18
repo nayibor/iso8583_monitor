@@ -66,9 +66,15 @@ defmodule Iso8583MonitorWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{Iso8583MonitorWeb.UserAuth, :ensure_authenticated}] do
-      live "/users/register", UserRegistrationLive, :new      
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/users/register", UserRegistrationLive, :new      
+      live "/rules", RuleLive.Index, :index
+      live "/rules/new", RuleLive.Index, :new
+      live "/rules/:id/edit", RuleLive.Index, :edit
+      live "/rules/:id", RuleLive.Show, :show
+      live "/rules/:id/show/edit", RuleLive.Show, :edit
+      
     end
   end
 

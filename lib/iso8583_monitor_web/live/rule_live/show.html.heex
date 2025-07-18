@@ -1,0 +1,30 @@
+<.header>
+  Rule {@rule.id}
+  <:subtitle>This is a rule record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/rules/#{@rule}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit rule</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name">{@rule.name}</:item>
+  <:item title="Description">{@rule.description}</:item>
+  <:item title="Expression">{@rule.expression}</:item>
+  <:item title="Tag">{@rule.tag}</:item>
+  <:item title="Status">{@rule.status}</:item>
+</.list>
+
+<.back navigate={~p"/rules"}>Back to rules</.back>
+
+<.modal :if={@live_action == :edit} id="rule-modal" show on_cancel={JS.patch(~p"/rules/#{@rule}")}>
+  <.live_component
+    module={Iso8583MonitorWeb.RuleLive.FormComponent}
+    id={@rule.id}
+    title={@page_title}
+    action={@live_action}
+    rule={@rule}
+    patch={~p"/rules/#{@rule}"}
+  />
+</.modal>
