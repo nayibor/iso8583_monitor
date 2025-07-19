@@ -1,0 +1,47 @@
+<.header>
+  Listing Interfaces
+  <:actions>
+    <.link patch={~p"/interfaces/new"}>
+      <.button>New Interface</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="interfaces"
+  rows={@streams.interfaces}
+  row_click={fn {_id, interface} -> JS.navigate(~p"/interfaces/#{interface}") end}
+>
+  <:col :let={{_id, interface}} label="Name">{interface.name}</:col>
+  <:col :let={{_id, interface}} label="Description">{interface.description}</:col>
+  <:col :let={{_id, interface}} label="Pool name">{interface.pool_name}</:col>
+  <:col :let={{_id, interface}} label="Pool type">{interface.pool_type}</:col>
+  <:col :let={{_id, interface}} label="Address">{interface.address}</:col>
+  <:col :let={{_id, interface}} label="Port">{interface.port}</:col>
+  <:col :let={{_id, interface}} label="Status">{interface.status}</:col>
+  <:action :let={{_id, interface}}>
+    <div class="sr-only">
+      <.link navigate={~p"/interfaces/#{interface}"}>Show</.link>
+    </div>
+    <.link patch={~p"/interfaces/#{interface}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, interface}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: interface.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="interface-modal" show on_cancel={JS.patch(~p"/interfaces")}>
+  <.live_component
+    module={Iso8583MonitorWeb.InterfaceLive.FormComponent}
+    id={@interface.id || :new}
+    title={@page_title}
+    action={@live_action}
+    interface={@interface}
+    patch={~p"/interfaces"}
+  />
+</.modal>

@@ -1,0 +1,32 @@
+<.header>
+  Interface {@interface.id}
+  <:subtitle>This is a interface record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/interfaces/#{@interface}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit interface</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name">{@interface.name}</:item>
+  <:item title="Description">{@interface.description}</:item>
+  <:item title="Pool name">{@interface.pool_name}</:item>
+  <:item title="Pool type">{@interface.pool_type}</:item>
+  <:item title="Address">{@interface.address}</:item>
+  <:item title="Port">{@interface.port}</:item>
+  <:item title="Status">{@interface.status}</:item>
+</.list>
+
+<.back navigate={~p"/interfaces"}>Back to interfaces</.back>
+
+<.modal :if={@live_action == :edit} id="interface-modal" show on_cancel={JS.patch(~p"/interfaces/#{@interface}")}>
+  <.live_component
+    module={Iso8583MonitorWeb.InterfaceLive.FormComponent}
+    id={@interface.id}
+    title={@page_title}
+    action={@live_action}
+    interface={@interface}
+    patch={~p"/interfaces/#{@interface}"}
+  />
+</.modal>

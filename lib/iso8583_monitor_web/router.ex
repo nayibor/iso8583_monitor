@@ -69,11 +69,19 @@ defmodule Iso8583MonitorWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/users/register", UserRegistrationLive, :new      
+
       live "/rules", RuleLive.Index, :index
       live "/rules/new", RuleLive.Index, :new
       live "/rules/:id/edit", RuleLive.Index, :edit
       live "/rules/:id", RuleLive.Show, :show
       live "/rules/:id/show/edit", RuleLive.Show, :edit
+
+      live "/interfaces", InterfaceLive.Index, :index
+      live "/interfaces/new", InterfaceLive.Index, :new
+      live "/interfaces/:id/edit", InterfaceLive.Index, :edit
+      live "/interfaces/:id", InterfaceLive.Show, :show
+      live "/interfaces/:id/show/edit", InterfaceLive.Show, :edit
+
       
     end
   end
