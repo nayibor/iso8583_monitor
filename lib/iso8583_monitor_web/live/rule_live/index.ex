@@ -73,6 +73,7 @@ defmodule Iso8583MonitorWeb.RuleLive.Index do
     |> stream(:rules,rules,reset: true)}
   end
 
+  @impl true
   ##this is for a search with a real value
   def handle_event("search", %{"name" => name} = _params, socket) do
     offset = Utils.get_offset(1)

@@ -7,6 +7,17 @@
   </:actions>
 </.header>
 
+<.simple_form
+  for={@form}
+  id="search-form"
+  phx-submit="search"
+  >
+  <div class="sm:w-full md:w-1/2">
+    <.input  name="name" id="name" value="" type="text" label="" placeholder="Search" />
+  </div>
+</.simple_form>
+
+
 <.table
   id="interfaces"
   rows={@streams.interfaces}
@@ -34,6 +45,14 @@
     </.link>
   </:action>
 </.table>
+
+<!-- this is for pagination -->
+<!--this is for a sample pagination page -->
+<div class="flex mx-auto items-center justify-center mt-5">
+  <.paginate page={@page_data.cpage} next_page_show={@page_data.next_page_show} />  
+</div>
+
+
 
 <.modal :if={@live_action in [:new, :edit]} id="interface-modal" show on_cancel={JS.patch(~p"/interfaces")}>
   <.live_component

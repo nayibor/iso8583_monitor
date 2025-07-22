@@ -7,6 +7,7 @@ defmodule Iso8583Monitor.Interfaces do
   alias Iso8583Monitor.Repo
 
   alias Iso8583Monitor.Interfaces.Interface
+  alias Iso8583Monitor.Utils
 
   @doc """
   Returns the list of interfaces.
@@ -17,8 +18,12 @@ defmodule Iso8583Monitor.Interfaces do
       [%Interface{}, ...]
 
   """
-  def list_interfaces do
-    Repo.all(Interface)
+  def list_interfaces(params \\ %{name: "",limit: Utils.get_page_size(),offset: Utils.get_offset(1)}) do
+    limit = params.limit
+    offset = params.offset
+    name = params.name
+    search_string = "%#{name}%" 
+    Repo.all(from r in Interface,limit: ^limit,offset: ^offset,order_by: [desc: :id],where:  ilike(field(r,:name), ^search_string))    
   end
 
   @doc """
