@@ -22,6 +22,8 @@ defmodule Iso8583MonitorWeb.InterfaceLive.FormComponent do
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:pool_name]} type="text" label="Pool name" />
+
+         <.input field={@form[:specification]} type="textarea" label="Specification" />   
         <.input
           field={@form[:pool_type]}
           type="select"

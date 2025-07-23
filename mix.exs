@@ -19,7 +19,8 @@ defmodule Iso8583Monitor.MixProject do
   def application do
     [
       mod: {Iso8583Monitor.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools],
+      start_phases: [{:start_interface_servers, []}],     
     ]
   end
 
@@ -51,7 +52,9 @@ defmodule Iso8583Monitor.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:ranch, "~> 2.2.0"},
+      {:iso8583_erl, git: "https://github.com/nayibor/iso8583_erl.git", branch: "develop"}      
     ]
   end
 

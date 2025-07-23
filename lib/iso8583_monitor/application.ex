@@ -4,12 +4,15 @@ defmodule Iso8583Monitor.Application do
   @moduledoc false
 
   use Application
-
+  alias Iso8583Monitor.Repo  
+  alias Iso8583Monitor.Transactions.Rule
+  
   @impl true
   def start(_type, _args) do
     children = [
       Iso8583MonitorWeb.Telemetry,
       Iso8583Monitor.Repo,
+      Iso8583Monitor.InterfaceMonitor,
       {DNSCluster, query: Application.get_env(:iso8583_monitor, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Iso8583Monitor.PubSub},
       # Start the Finch HTTP client for sending emails
@@ -20,10 +23,21 @@ defmodule Iso8583Monitor.Application do
       Iso8583MonitorWeb.Endpoint
     ]
 
+    
+    ##rules = Repo.all(Rule)
+    ##inspect(rules)
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Iso8583Monitor.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  @impl true  
+  def start_phase(:start_interface_servers,_,_) do
+    inspect("**starting interface servers**")
+    rules = Repo.all(Rule)
+    IO.inspect(rules)
+    :ok
   end
 
   # Tell Phoenix to update the endpoint configuration
