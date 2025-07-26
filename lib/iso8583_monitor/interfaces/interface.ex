@@ -1,4 +1,5 @@
 defmodule Iso8583Monitor.Interfaces.Interface do
+  alias Iso8583Monitor.StringMap
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -10,7 +11,7 @@ defmodule Iso8583Monitor.Interfaces.Interface do
     field :description, :string
     field :pool_name, :string
     field :pool_type, Ecto.Enum, values: [:client, :server]
-    field :specification, :string
+    field :specification, StringMap
     
     timestamps(type: :utc_datetime)
   end

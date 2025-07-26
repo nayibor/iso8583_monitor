@@ -3,7 +3,7 @@ defmodule Iso8583Monitor.Repo.Migrations.AddSpecificationToInterface do
 
   def change do
     alter table(:interfaces) do
-      add :specification, :text      
+      add :specification, :map      
     end
   end
 end
