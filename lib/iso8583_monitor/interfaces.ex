@@ -9,6 +9,46 @@ defmodule Iso8583Monitor.Interfaces do
   alias Iso8583Monitor.Interfaces.Interface
   alias Iso8583Monitor.Utils
 
+
+
+  @doc """
+  this is for converting an iso string spec into a format which can be
+  used by iso8583_erl library
+
+  """
+  def convert_spec(spec_string) do
+    case Jason.decode(spec_string) do
+      {:ok,decoded_string} ->
+	Enum.map(decoded_string,
+	  fn {key,value} ->
+	    case key do
+	      "bitmap_type" -> {:bitmap_type,bitmap_type(value)}
+	      field_number  ->
+		{String.to_integer(field_number),
+		 %{
+		   pad_info: {pad_direction(value["pad_info"]["direction"]),pad_char(value["pad_info"]["char"])},
+		   length_field: value["length_field"],
+		   header_length: value["header_length"],
+		   sub_format: String.to_charlist(value["sub_format"])
+		   ##type: value["type"]
+		 }
+		}
+	    end
+	end)
+	error -> error
+    end
+  end
+
+  def bitmap_type("bitmap"), do: :bitmap
+  def bitmap_type("hex"), do: :hex
+	
+  def pad_direction("none"), do: :none
+  def pad_direction("left"), do: :left
+  def pad_direction("right"), do: :right
+
+  def pad_char("none"), do: :none
+  def pad_char(char), do: char 
+  
   @doc """
   Returns the list of interfaces.
 
