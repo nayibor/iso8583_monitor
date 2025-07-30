@@ -48,6 +48,14 @@ defmodule Iso8583Monitor.Interfaces do
 
   def pad_char("none"), do: :none
   def pad_char(char), do: char 
+
+  
+  def start_interface(interface) do
+    specification_decoded = convert_spec(interface.specification)
+    specification = :iso8583_erl.load_specification_using_data(specification_decoded)
+    {:ok,_} = :ranch.start_listener(interface.pool_name,:ranch_tcp,%{socket_opts: [{:port,interface.port}],max_connections: interface.max_connections},:iso_sock_server,[interface.header_size,specification])
+  end
+  
   
   @doc """
   Returns the list of interfaces.

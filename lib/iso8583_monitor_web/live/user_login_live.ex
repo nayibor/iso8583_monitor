@@ -3,10 +3,10 @@ defmodule Iso8583MonitorWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+      <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Log in to account
-	<!--
+      Log in to account
+      <!--
         <:subtitle>
           Don't have an account?
           <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
@@ -14,7 +14,7 @@ defmodule Iso8583MonitorWeb.UserLoginLive do
           </.link>
           for an account now.
           </:subtitle>
-	-->
+      -->
       </.header>
 
       <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
@@ -33,8 +33,8 @@ defmodule Iso8583MonitorWeb.UserLoginLive do
           </.button>
         </:actions>
       </.simple_form>
-    </div>
-    """
+     </div>
+     """
   end
 
   def mount(_params, _session, socket) do

@@ -20,5 +20,6 @@ defmodule Iso8583MonitorWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :iso8583_monitor
+  ##use Gettext, otp_app: :iso8583_monitor
+  use Gettext.Backend, otp_app: :iso8583_monitor  
 end

@@ -22,7 +22,8 @@ defmodule Iso8583MonitorWeb.InterfaceLive.FormComponent do
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:pool_name]} type="text" label="Pool name" />
-
+        <.input field={@form[:address]} type="text" label="Address" />
+        <.input field={@form[:port]} type="number" label="Port" />
          <.input field={@form[:specification]} type="textarea" label="Specification" />   
         <.input
           field={@form[:pool_type]}
@@ -31,8 +32,8 @@ defmodule Iso8583MonitorWeb.InterfaceLive.FormComponent do
           prompt="Choose a value"
           options={Ecto.Enum.values(Iso8583Monitor.Interfaces.Interface, :pool_type)}
         />
-        <.input field={@form[:address]} type="text" label="Address" />
-        <.input field={@form[:port]} type="number" label="Port" />
+        <.input field={@form[:header_size]} type="number" label="Header Size" />
+        <.input field={@form[:max_connections]} type="number" label="Maximum Connections" />	
         <.input field={@form[:status]} type="checkbox" label="Status" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Interface</.button>

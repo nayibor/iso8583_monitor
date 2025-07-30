@@ -12,6 +12,8 @@ defmodule Iso8583Monitor.Interfaces.Interface do
     field :pool_name, :string
     field :pool_type, Ecto.Enum, values: [:client, :server]
     field :specification, StringMap
+    field :header_size, :integer, default: 4
+    field :max_connections, :integer, default: 100
     
     timestamps(type: :utc_datetime)
   end
@@ -19,8 +21,8 @@ defmodule Iso8583Monitor.Interfaces.Interface do
   @doc false
   def changeset(interface, attrs) do
     interface
-    |> cast(attrs, [:name,:description,:pool_name,:pool_type,:address,:port,:status,:specification])
-    |> validate_required([:name,:description,:pool_name,:pool_type,:address,:port,:status,:specification])
+    |> cast(attrs, [:name,:description,:pool_name,:pool_type,:address,:port,:status,:specification,:header_size,:max_connections])
+    |> validate_required([:name,:description,:pool_name,:pool_type,:address,:port,:status,:specification,:header_size,:max_connections])
     |> unique_constraint(:pool_name)
   end
 end

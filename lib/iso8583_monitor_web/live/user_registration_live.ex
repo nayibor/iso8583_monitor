@@ -9,7 +9,7 @@ defmodule Iso8583MonitorWeb.UserRegistrationLive do
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
         Register New User
-	<!--
+      <!--
         <:subtitle>
           Already registered?
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
@@ -17,7 +17,7 @@ defmodule Iso8583MonitorWeb.UserRegistrationLive do
           </.link>
           to your account now.
           </:subtitle>
-	-->
+      -->
       </.header>
 
       <.simple_form

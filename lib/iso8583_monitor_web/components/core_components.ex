@@ -17,8 +17,9 @@ defmodule Iso8583MonitorWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import Iso8583MonitorWeb.Gettext
-
+  ##import Iso8583MonitorWeb.Gettext
+  use Gettext, backend: Iso8583MonitorWeb.Gettext
+  
   @doc """
   Renders a modal.
 
