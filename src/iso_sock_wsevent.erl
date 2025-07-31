@@ -8,8 +8,8 @@ init([]) ->
     {ok, []}.
 
 %% @doc this event will send the received message to the websocket 
-handle_event({trans,_FlData,_Send_list}, State) ->
-	%%Socket_list = maps:get(socket_list,Send_list),
+handle_event({trans,_FlData,Send_list}, State) ->
+	_Socket_list = maps:get(socket_list,Send_list),
 	%%List_send = lists:map(fun(I)-> (catch gproc:send({p, l, I},{<<"tdata">>,Msg_out})) end,Socket_list),
     {ok, State}.
 

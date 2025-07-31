@@ -24,12 +24,11 @@
   row_click={fn {_id, interface} -> JS.navigate(~p"/interfaces/#{interface}") end}
 >
   <:col :let={{_id, interface}} label="Name">{interface.name}</:col>
-  <:col :let={{_id, interface}} label="Description">{interface.description}</:col>
   <:col :let={{_id, interface}} label="Pool name">{interface.pool_name}</:col>
   <:col :let={{_id, interface}} label="Pool type">{interface.pool_type}</:col>
   <:col :let={{_id, interface}} label="Address">{interface.address}</:col>
   <:col :let={{_id, interface}} label="Port">{interface.port}</:col>
-  <:col :let={{_id, interface}} label="Status">{interface.status}</:col>
+  <:col :let={{_id, interface}} label="Status"><%= if(interface.status,do: "running",else: "stopped")  %></:col>
   <:action :let={{_id, interface}}>
     <div class="sr-only">
       <.link navigate={~p"/interfaces/#{interface}"}>Show</.link>

@@ -4,6 +4,7 @@ defmodule Iso8583Monitor.Application do
   @moduledoc false
 
   use Application
+  alias Iso8583Monitor.Interfaces
   alias Iso8583Monitor.Repo  
   alias Iso8583Monitor.Transactions.Rule
   
@@ -34,9 +35,7 @@ defmodule Iso8583Monitor.Application do
 
   @impl true  
   def start_phase(:start_interface_servers,_,_) do
-    inspect("**starting interface servers**")
-    rules = Repo.all(Rule)
-    IO.inspect(rules)
+    Interfaces.start_interfaces()
     :ok
   end
 

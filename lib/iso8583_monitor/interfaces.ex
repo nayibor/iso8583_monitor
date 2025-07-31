@@ -5,16 +5,14 @@ defmodule Iso8583Monitor.Interfaces do
 
   import Ecto.Query, warn: false
   alias Iso8583Monitor.Repo
-
   alias Iso8583Monitor.Interfaces.Interface
   alias Iso8583Monitor.Utils
-
+  require Logger
 
 
   @doc """
   this is for converting an iso string spec into a format which can be
   used by iso8583_erl library
-
   """
   def convert_spec(spec_string) do
     case Jason.decode(spec_string) do
@@ -53,9 +51,37 @@ defmodule Iso8583Monitor.Interfaces do
   def start_interface(interface) do
     specification_decoded = convert_spec(interface.specification)
     specification = :iso8583_erl.load_specification_using_data(specification_decoded)
-    {:ok,_} = :ranch.start_listener(interface.pool_name,:ranch_tcp,%{socket_opts: [{:port,interface.port}],max_connections: interface.max_connections},:iso_sock_server,[interface.header_size,specification])
+    resp = :ranch.start_listener(interface.pool_name,:ranch_tcp,%{socket_opts: [{:port,interface.port}],max_connections: interface.max_connections},:iso_sock_server,[interface.header_size,specification])
+    case resp do
+      {:ok,_ } ->
+	update_interface(interface,%{id: interface.id,status: :true})
+	Logger.info("interface #{interface.name} started succesfully")
+      {:error,term } -> Logger.error(term )    
+    end
   end
+
+
+  def start_interfaces() do
+    Logger.info("**starting interface servers**")
+    interfaces = list_interfaces()
+    Enum.map(interfaces,fn interface -> start_interface(interface) end)
+  end  
   
+  def stop_interface(interface) do
+    resp = :ranch.stop_listener(interface.pool_name)
+    case resp do
+      :ok ->
+	update_interface(interface,%{id: interface.id,status: false})
+	Logger.info("interface #{interface.name} stopped succesfully")
+      {:error,_} -> Logger.error("interface not found")		
+    end
+  end
+
+  def stop_interfaces() do
+    Logger.info("**stopping interface servers**")
+    interfaces = list_interfaces()
+    Enum.map(interfaces,fn interface -> stop_interface(interface) end)
+  end
   
   @doc """
   Returns the list of interfaces.
