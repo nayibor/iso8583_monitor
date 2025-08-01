@@ -38,6 +38,8 @@ defmodule Iso8583MonitorWeb.InterfaceLive.Index do
     |> assign(:interface, nil)
   end
 
+
+  
   @impl true
   def handle_info({Iso8583MonitorWeb.InterfaceLive.FormComponent, {:saved, _interface}}, socket) do
     interfaces = Interfaces.list_interfaces()
@@ -47,6 +49,21 @@ defmodule Iso8583MonitorWeb.InterfaceLive.Index do
     |> stream(:interfaces,interfaces,reset: true)}
   end
 
+
+  @impl true
+  def handle_event("toggle", %{"id" => id}, socket) do
+    interface = Interfaces.get_interface!(id)
+    case interface.status do
+     :true -> Interfaces.stop_interface(interface)
+     :false -> Interfaces.start_interface(interface)		
+    end
+    interfaces = Interfaces.list_interfaces()
+    {:noreply,
+    socket
+    |> assign(:page_data,Utils.paginate(1,length(interfaces)))
+    |> stream(:interfaces,interfaces,reset: true)}
+  end
+  
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     interface = Interfaces.get_interface!(id)
@@ -80,5 +97,7 @@ defmodule Iso8583MonitorWeb.InterfaceLive.Index do
      |> assign(:name,name)
      |> assign(:page_data,Utils.paginate(1,length(interfaces)))     
      |> stream(:interfaces, interfaces,reset: true)}
-  end
+ end
+
+ 
 end

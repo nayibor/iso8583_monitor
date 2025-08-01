@@ -5,8 +5,6 @@ defmodule Iso8583Monitor.Application do
 
   use Application
   alias Iso8583Monitor.Interfaces
-  alias Iso8583Monitor.Repo  
-  alias Iso8583Monitor.Transactions.Rule
   
   @impl true
   def start(_type, _args) do

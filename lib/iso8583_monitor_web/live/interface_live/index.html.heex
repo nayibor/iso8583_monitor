@@ -29,6 +29,11 @@
   <:col :let={{_id, interface}} label="Address">{interface.address}</:col>
   <:col :let={{_id, interface}} label="Port">{interface.port}</:col>
   <:col :let={{_id, interface}} label="Status"><%= if(interface.status,do: "running",else: "stopped")  %></:col>
+  <:action :let={{id, interface}}>
+    <.link phx-click={JS.push("toggle", value: %{id: interface.id})} data-confirm="Are you sure?">
+      <%= if(interface.status,do: "stop",else: "start")  %>
+    </.link>
+  </:action>
   <:action :let={{_id, interface}}>
     <div class="sr-only">
       <.link navigate={~p"/interfaces/#{interface}"}>Show</.link>

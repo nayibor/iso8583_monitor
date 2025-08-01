@@ -82,6 +82,7 @@ defmodule Iso8583Monitor.Interfaces do
     interfaces = list_interfaces()
     Enum.map(interfaces,fn interface -> stop_interface(interface) end)
   end
+
   
   @doc """
   Returns the list of interfaces.
