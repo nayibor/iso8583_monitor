@@ -15,7 +15,7 @@
   <:item title="Pool type">{@interface.pool_type}</:item>
   <:item title="Address">{@interface.address}</:item>
   <:item title="Port">{@interface.port}</:item>
-  <:item title="Status">{@interface.status}</:item>
+  <:item title="Status"><%= if(@interface.status,do: "running",else: "stopped")  %></:item>
 </.list>
 
 <.back navigate={~p"/interfaces"}>Back to interfaces</.back>

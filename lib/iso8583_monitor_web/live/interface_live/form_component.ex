@@ -34,7 +34,6 @@ defmodule Iso8583MonitorWeb.InterfaceLive.FormComponent do
         />
         <.input field={@form[:header_size]} type="number" label="Header Size" />
         <.input field={@form[:max_connections]} type="number" label="Maximum Connections" />	
-        <.input field={@form[:status]} type="checkbox" label="Status" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Interface</.button>
         </:actions>
