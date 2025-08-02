@@ -1,0 +1,13 @@
+<.header>
+  Transactions
+</.header>
+
+
+<.table id="transactions" rows={@streams.transactions} >
+  <:col :let={{_id, transaction}} label="Pan">{transaction[2]}</:col>
+  <:col :let={{_id, transaction}} label="Type">{transaction[3]}</:col>
+  <:col :let={{_id, transaction}} label="Amount">{transaction[4]}</:col>
+  <:col :let={{_id, transaction}} label="Date">{transaction[12]}</:col>
+  <:col :let={{_id, transaction}} label="Response Code">{transaction[39]}</:col>
+  <:col :let={{_id, transaction}} label="Terminal">{transaction[43]}</:col>
+</.table>

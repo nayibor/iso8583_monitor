@@ -81,6 +81,8 @@ defmodule Iso8583MonitorWeb.Router do
       live "/interfaces/:id/edit", InterfaceLive.Index, :edit
       live "/interfaces/:id", InterfaceLive.Show, :show
       live "/interfaces/:id/show/edit", InterfaceLive.Show, :edit
+
+      live "/transactions", InterfaceLive.Monitor, :index
     end
   end
 
