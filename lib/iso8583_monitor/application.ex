@@ -20,10 +20,6 @@ defmodule Iso8583Monitor.Application do
       # Start to serve requests, typically the last entry
       Iso8583MonitorWeb.Endpoint
     ]
-
-    
-    ##rules = Repo.all(Rule)
-    ##inspect(rules)
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Iso8583Monitor.Supervisor]

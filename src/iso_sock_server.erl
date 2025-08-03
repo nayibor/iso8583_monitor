@@ -8,7 +8,6 @@
 -module(iso_sock_server).
 -behaviour(gen_server).
 -behaviour(ranch_protocol).
-
 -record(state, {iso_message=[],socket,ref,transport,event_handler,bhead,spec_iso}). % the current socket
 
 
@@ -21,10 +20,7 @@
 %% macros for messages received on socket
 -define(SOCK(Msg), {tcp, _Port, Msg}).
 
-
 -type state() :: #state{}.
-
-
 
 %% @doc this is used for starting up the ranch accepting socket 
 start_link(Ref, Transport, Opts) ->
@@ -100,8 +96,7 @@ terminate(_Reason, #state{socket=AcceptSocket_process,transport=Transport}) ->
 %% @doc this is for processing the transactions which come through the system 
 %%process_transaction({_tcp,_Port_Numb,Msg}, S = #state{socket=AcceptSocket,iso_message=Isom,transport=Transport,event_handler=Epid,bhead=Bheader})->
 %%have to add something which checks the maximum size of a field
-process_transaction({_,_,Msg}, S = #state{socket=AcceptSocket,iso_message=Isom,transport=Transport,bhead=Bheader,
-					  event_handler=EventPid,spec_iso=Specification})->
+process_transaction({_,_,Msg}, S = #state{socket=_AcceptSocket,iso_message=Isom,transport=_Transport,bhead=Bheader,event_handler=_EventPid,spec_iso=Specification})->
     State_new = lists:flatten([Isom,Msg]), 
     %%io:format("~nmessage is ~psize is ~p bhead is ~p", [Msg,length(State_new),Bheader]),		
     case length(State_new) of 
@@ -112,40 +107,18 @@ process_transaction({_,_,Msg}, S = #state{socket=AcceptSocket,iso_message=Isom,t
 	    Len = erlang:list_to_integer(LenStr),
 	    case erlang:length(Rest) of 
 		SizeafterHead when Len =:= SizeafterHead ->
+		    %%io:format("~n main message is ~p~n", [Rest]),
 		    Map_iso = iso8583_erl:unpack(Rest,Specification),
-		    %%io:format("~n message map is ~p~n", [Map_iso]),
-
+		    io:format("~n message map received is ~p~n", [Map_iso]),
 		    %%for sending response to specific users captured by the rules
 		    %%Response_rules = yapp_test_lib_rules:process_rule_transaction(Map_iso),
-		    %%Socket_users = proplists:get_value(socket_users,Response_rules),
-		    %%Mail_users =   proplists:get_value(mail_users,Response_rules),	
-		    %%io:format("~nusers to be sent info is ~p",[{Socket_users,Mail_users}]),
-		    Socket_users = [],
-		    Mail_users = [],			
-		    Response_process = gen_event:notify(EventPid,{trans,Map_iso,#{socket_list => Socket_users,mail_list => Mail_users}}),
-
-		    %%for sending all transactions to other users
-		    Remove_users = lists:flatten(Socket_users,Mail_users),
-		    Send_list = Remove_users,
-		    %%Send_list = yapp_test_lib_rules:remove_duplicates_filter(Remove_users),
-
-		    %%io:format("~n non filter users to be sent info is ~p",[Send_list]),
-		    ok = gen_event:notify(EventPid,{trans,Map_iso,#{socket_list => Send_list,mail_list => []}}),
-
-		    case Response_process of
-			{error,Reason}->
-			    Final_size = iso8583_erl:get_size_send(Reason,Bheader),
-			    Final_socket_err_resp = [Final_size,Reason],
-			    ok = send(AcceptSocket,Final_socket_err_resp,Transport),	
-			    {noreply, S#state{iso_message=[]}};
-			{ok,Iso_Response} ->
-			    Final_size = iso8583_erl:get_size_send(Iso_Response,Bheader),
-			    Final_socket_response = [Final_size,Iso_Response],
-			    ok = send(AcceptSocket,Final_socket_response,Transport),
-			    {noreply, S#state{iso_message=[]}};
-			ok ->
-			    {noreply, S#state{iso_message=[]}}								
-		    end;
+                    gproc:send({p, l,liveview_process},{interface_transaction,Map_iso}),
+		    %%Iso_Response = iso8583_erl:pack(Map_iso,Specification),
+		    %%Final_size = iso8583_erl:get_size_send(Iso_Response,Bheader),
+		    %%_Final_socket_response = [Final_size,Iso_Response],
+		    %%io:format("~n echoing message back ~n",[]),	
+		    %%ok = send(AcceptSocket,Final_socket_response,Transport),
+		    {noreply, S#state{iso_message=[]}};
 		SizeafterHead when Len < SizeafterHead ->
 		    {noreply, S#state{iso_message=State_new}}
 	    end

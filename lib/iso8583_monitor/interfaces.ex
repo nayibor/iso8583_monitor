@@ -83,6 +83,29 @@ defmodule Iso8583Monitor.Interfaces do
     Enum.map(interfaces,fn interface -> stop_interface(interface) end)
   end
 
+
+  def test_trasaction(transaction_map) do
+    interfaces = Repo.all_by(Interface, status: :true,pool_type: :server)
+    case length(interfaces) do
+      size_length when size_length > 0 ->
+	interface = Enum.at(interfaces,0)
+	specification_decoded = convert_spec(interface.specification)
+	specification = :iso8583_erl.load_specification_using_data(specification_decoded)
+	iso_message = :iso8583_erl.pack(transaction_map,specification)
+	final_size = :iso8583_erl.get_size_send(iso_message,interface.header_size)
+	final_socket_send = [final_size,iso_message]
+	Logger.info("**sending test transaction**")	
+	:io.format("~n message map  sent is ~p",[transaction_map])	 
+	case :gen_tcp.connect(String.to_charlist(interface.address), interface.port, [:list, {:active, :once}]) do
+	  {:ok, socket} ->
+	    :ok = :gen_tcp.send(socket,final_socket_send)
+	    :ok = :gen_tcp.close(socket)
+	  {:error, error} -> Logger.error(error)
+	end
+      _ -> Logger.info("no active interface servers available")
+    end
+  end
+
   
   @doc """
   Returns the list of interfaces.
