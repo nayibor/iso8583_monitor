@@ -54,7 +54,9 @@ defmodule Iso8583Monitor.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
       {:ranch, "~> 2.2.0"},
-      {:iso8583_erl, git: "https://github.com/nayibor/iso8583_erl.git", branch: "develop"}      
+      {:iso8583_erl, git: "https://github.com/nayibor/iso8583_erl.git", branch: "develop"},
+      {:luerl, "~> 1.4"},
+      {:gproc, git: "https://github.com/uwiger/gproc", tag: "0.9.1"}
     ]
   end
 
