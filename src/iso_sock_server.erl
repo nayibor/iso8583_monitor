@@ -12,10 +12,12 @@
 
 
 %%for ranch stuff
--export([start_link/3]).
+-export([start_link/3,process_transaction/1]).
 
 %%for gen server stuff
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,code_change/3,handle_continue/2, terminate/2]).
+
+
 
 %% macros for messages received on socket
 -define(SOCK(Msg), {tcp, _Port, Msg}).
@@ -109,10 +111,12 @@ process_transaction({_,_,Msg}, S = #state{socket=_AcceptSocket,iso_message=Isom,
 		SizeafterHead when Len =:= SizeafterHead ->
 		    %%io:format("~n main message is ~p~n", [Rest]),
 		    Map_iso = iso8583_erl:unpack(Rest,Specification),
-		    io:format("~n message map received is ~p~n", [Map_iso]),
+		    %%io:format("~n message map received is ~p~n", [Map_iso]),
+		    Map_rules_processed = process_transaction(Map_iso),
+		    io:format("~n message map after rules processing is ~p~n", [Map_rules_processed]),
 		    %%for sending response to specific users captured by the rules
 		    %%Response_rules = yapp_test_lib_rules:process_rule_transaction(Map_iso),
-                    gproc:send({p, l,liveview_process},{interface_transaction,Map_iso}),
+                    gproc:send({p, l,liveview_process},{interface_transaction,Map_rules_processed}),
 		    %%Iso_Response = iso8583_erl:pack(Map_iso,Specification),
 		    %%Final_size = iso8583_erl:get_size_send(Iso_Response,Bheader),
 		    %%_Final_socket_response = [Final_size,Iso_Response],
@@ -129,3 +133,31 @@ process_transaction({_,_,Msg}, S = #state{socket=_AcceptSocket,iso_message=Isom,
 -spec send(port(),[pos_integer()],port())->ok|{error,any()}.
 send(Socket, Str,Transport) ->
     ok = Transport:send(Socket,Str).
+
+
+process_transaction_with_rule(Map_transaction,Rule_string) ->
+    case luerl:do(Rule_string,luerl:init()) of 
+	{ok,_,State} ->
+	    %%io:format("~nrule string is ~p~nmap transaction is ~p~n",[Rule_string,Map_transaction]),
+	    {ok,[Response],_} = luerl:call_function_dec([main], [Map_transaction],State),
+	    %%io:format("~n response for rule processing is ~p ",[Response]),
+	    Response;
+	_ -> false
+    end.				   
+
+%%find out list of libraries and implement them in  luerl
+%% writing erlang  with elixir can be confusing due to the use of colon and commas in erlang at eol and none in elixir
+%%% @doc this is for processing a single transaction map across multiple rules
+process_transaction(Map_transaction)->
+    Enabled_rules = ets:tab2list(rules),
+    Tag_list_agg = 
+	lists:foldl(
+	  fun({_Id,Rule_expression,Tag},Tag_list)->
+		  case process_transaction_with_rule(Map_transaction, Rule_expression) of
+		      true -> [Tag | Tag_list];
+		      false -> Tag_list
+		  end
+	  end,[],Enabled_rules),
+    Tag_join = lists:join(<<" ">>,Tag_list_agg),
+    Binary_list = binary:list_to_bin(Tag_join),
+    maps:put(tag,Binary_list,Map_transaction).

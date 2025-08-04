@@ -6,6 +6,7 @@ defmodule Iso8583Monitor.Interfaces do
   import Ecto.Query, warn: false
   alias Iso8583Monitor.Repo
   alias Iso8583Monitor.Interfaces.Interface
+  alias Iso8583Monitor.Transactions.Rule
   alias Iso8583Monitor.Utils
   require Logger
 
@@ -85,7 +86,7 @@ defmodule Iso8583Monitor.Interfaces do
 
 
   def test_trasaction(transaction_map) do
-    interfaces = Repo.all_by(Interface, status: :true,pool_type: :server)
+     interfaces = Repo.all_by(Interface, status: :true,pool_type: :server)
     case length(interfaces) do
       size_length when size_length > 0 ->
 	interface = Enum.at(interfaces,0)
@@ -103,6 +104,17 @@ defmodule Iso8583Monitor.Interfaces do
 	  {:error, error} -> Logger.error(error)
 	end
       _ -> Logger.info("no active interface servers available")
+    end
+  end
+
+  
+  def load_rules() do
+    rules = Repo.all_by(Rule, status: :true)
+    case Enum.member?(:ets.all(),:rules) do
+      :true -> Enum.map(rules,fn rule -> :ets.insert(:rules,{rule.id,rule.expression,rule.tag}) end)
+      :false ->
+	rule_table = :ets.new(:rules, [:set,:named_table])
+	Enum.map(rules,fn rule -> :ets.insert(rule_table,{rule.id,rule.expression,rule.tag}) end)
     end
   end
 
