@@ -12,7 +12,7 @@
 
 
 %%for ranch stuff
--export([start_link/3,process_transaction/1]).
+-export([start_link/3]).
 
 %%for gen server stuff
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,code_change/3,handle_continue/2, terminate/2]).
@@ -36,12 +36,9 @@ init({Ref, Transport,[Bheader,Specification]}) ->
 
 %% @doc for setting up the ranch socket
 handle_continue(setup_socket, S = #state{transport=Transport,ref=Ref})->
-    {ok, EventPid} = gen_event:start(),
-    link(EventPid),
-    ok = gen_event:add_handler(EventPid, iso_sock_wsevent, []),
     {ok, Socket} = ranch:handshake(Ref),
     ok = Transport:setopts(Socket,[list,{active, once}]),
-    {noreply,S#state{socket=Socket,event_handler=EventPid}}.
+    {noreply,S#state{socket=Socket}}.
 
 
 
@@ -90,7 +87,6 @@ code_change(_OldVsn, State, _Extra) ->
 %%terminate(_Reason, #state{socket=AcceptSocket_process,transport=Transport,event_handler=Pid}) ->
 terminate(_Reason, #state{socket=AcceptSocket_process,transport=Transport}) ->
     ok = Transport:close(AcceptSocket_process),
-    %%ok = gen_event:stop(Pid),
     error_logger:error_msg("~nterminate reason: ~p", [_Reason]),
     ok.
 
@@ -98,7 +94,7 @@ terminate(_Reason, #state{socket=AcceptSocket_process,transport=Transport}) ->
 %% @doc this is for processing the transactions which come through the system 
 %%process_transaction({_tcp,_Port_Numb,Msg}, S = #state{socket=AcceptSocket,iso_message=Isom,transport=Transport,event_handler=Epid,bhead=Bheader})->
 %%have to add something which checks the maximum size of a field
-process_transaction({_,_,Msg}, S = #state{socket=_AcceptSocket,iso_message=Isom,transport=_Transport,bhead=Bheader,event_handler=_EventPid,spec_iso=Specification})->
+process_transaction({_,_,Msg}, S = #state{socket=_AcceptSocket,iso_message=Isom,transport=_Transport,bhead=Bheader,spec_iso=Specification})->
     State_new = lists:flatten([Isom,Msg]), 
     %%io:format("~nmessage is ~psize is ~p bhead is ~p", [Msg,length(State_new),Bheader]),		
     case length(State_new) of 
@@ -147,7 +143,7 @@ process_transaction_with_rule(Map_transaction,Rule_string) ->
 
 %%find out list of libraries and implement them in  luerl
 %% writing erlang  with elixir can be confusing due to the use of colon and commas in erlang at eol and none in elixir
-%%% @doc this is for processing a single transaction map across multiple rules
+%% @doc this is for processing a single transaction map across multiple rules
 process_transaction(Map_transaction)->
     Enabled_rules = ets:tab2list(rules),
     Tag_list_agg = 
@@ -157,7 +153,7 @@ process_transaction(Map_transaction)->
 		      true -> [Tag | Tag_list];
 		      false -> Tag_list
 		  end
-	  end,[],Enabled_rules),
+	  end,[<<"">>],Enabled_rules),
     Tag_join = lists:join(<<" ">>,Tag_list_agg),
     Binary_list = binary:list_to_bin(Tag_join),
     maps:put(tag,Binary_list,Map_transaction).
