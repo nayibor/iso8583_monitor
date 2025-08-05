@@ -4,7 +4,8 @@ defmodule Iso8583MonitorWeb.RuleLive.Index do
   alias Iso8583Monitor.Transactions
   alias Iso8583Monitor.Transactions.Rule
   alias Iso8583Monitor.Utils
-
+  alias Iso8583Monitor.RulesServer
+  
   @impl true
   def mount(_params, _session, socket) do
     rules = Transactions.list_rules()
@@ -83,6 +84,14 @@ defmodule Iso8583MonitorWeb.RuleLive.Index do
      |> assign(:name,name)
      |> assign(:page_data,Utils.paginate(1,length(rules)))     
      |> stream(:rules, rules,reset: true)}
+  end
+  
+  @impl true
+  ##this is for a search with a real value
+  def handle_event("reload",_params, socket) do
+    RulesServer.reload_rules()
+    {:noreply,socket}
+
   end
   
   

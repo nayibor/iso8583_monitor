@@ -5,6 +5,15 @@
       <.button>New Rule</.button>
     </.link>
   </:actions>
+  <:actions>
+    <.link
+      phx-click={JS.push("reload", value: %{})}
+      data-confirm="Are you sure?"
+      >
+      <.button>Reload Rules</.button>
+    </.link>
+  </:actions>
+  
 </.header>
 
 <.simple_form

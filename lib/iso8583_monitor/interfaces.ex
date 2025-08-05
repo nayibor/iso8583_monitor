@@ -56,7 +56,7 @@ defmodule Iso8583Monitor.Interfaces do
     case resp do
       {:ok,_ } ->
 	update_interface(interface,%{id: interface.id,status: :true})
-	Logger.info("interface #{interface.name} started succesfully")
+	Logger.info("**interface #{interface.name} started succesfully**")
       {:error,term } -> Logger.error(term )    
     end
   end
@@ -109,13 +109,15 @@ defmodule Iso8583Monitor.Interfaces do
 
   
   def load_rules() do
+    Logger.info("**loading rules**")	
     rules = Repo.all_by(Rule, status: :true)
     case Enum.member?(:ets.all(),:rules) do
       :true -> Enum.map(rules,fn rule -> :ets.insert(:rules,{rule.id,rule.expression,rule.tag}) end)
       :false ->
-	rule_table = :ets.new(:rules, [:set,:named_table])
+	rule_table = :ets.new(:rules, [:set,:named_table,:protected])
 	Enum.map(rules,fn rule -> :ets.insert(rule_table,{rule.id,rule.expression,rule.tag}) end)
     end
+    Logger.info("**rules loaded succesfully**")	    
   end
 
   

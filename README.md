@@ -3,13 +3,13 @@
 
 This application is a system for montoring iso8583 transactions in real time,tagging them and viewing their status in real time on web browsers.
 
-This system receives iso 8583 messages from diverse sources on  a tcp-ip server also an interface server infinancial transaction processing.
+This system receives iso 8583 messages from diverse sources on  a tcp-ip server which is also called an interface server in financial transaction processing.
 
 it then passes the message through a filter using rules written in lua via the excellent [luerl](https://github.com/rvirding/luerl) erlang package
 
-It then forwards the messages which can be colour tagged if a rule matches to a websocket server for distribution to various user browsers where the tagged and normal transactions can be viewed. 
+Filtered messages which are colour tagged are then sent through phoenix live view to the  various user browsers where the  transactions can be viewed. 
 
-The purpose of this application is to receive real time feedback on status of  transactions so that quick actions can be taken as opposed to polling of the database or other non real time means of monitoring.
+The purpose of this application is to receive real time feedback on status of transactions so that quick actions can be taken as opposed to polling of the database or other non real time means of monitoring.
 
 
 ##Components##

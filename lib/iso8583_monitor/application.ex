@@ -10,7 +10,7 @@ defmodule Iso8583Monitor.Application do
   def start(_type, _args) do
     children = [
       Iso8583MonitorWeb.Telemetry,
-      Iso8583Monitor.Repo,
+      Iso8583Monitor.Repo,Iso8583Monitor.RulesServer,
       {DNSCluster, query: Application.get_env(:iso8583_monitor, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Iso8583Monitor.PubSub},
       # Start the Finch HTTP client for sending emails
