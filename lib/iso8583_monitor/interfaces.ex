@@ -112,7 +112,9 @@ defmodule Iso8583Monitor.Interfaces do
     Logger.info("**loading rules**")	
     rules = Repo.all_by(Rule, status: :true)
     case Enum.member?(:ets.all(),:rules) do
-      :true -> Enum.map(rules,fn rule -> :ets.insert(:rules,{rule.id,rule.expression,rule.tag}) end)
+      :true ->
+	:ets.delete_all_objects(:rules)
+	Enum.map(rules,fn rule -> :ets.insert(:rules,{rule.id,rule.expression,rule.tag}) end)
       :false ->
 	rule_table = :ets.new(:rules, [:set,:named_table,:protected])
 	Enum.map(rules,fn rule -> :ets.insert(rule_table,{rule.id,rule.expression,rule.tag}) end)
