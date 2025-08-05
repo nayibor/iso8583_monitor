@@ -86,7 +86,7 @@ defmodule Iso8583Monitor.Interfaces do
 
 
   def test_trasaction(transaction_map) do
-     interfaces = Repo.all_by(Interface, status: :true,pool_type: :server)
+    interfaces = Repo.all_by(Interface, status: :true,pool_type: :server)
     case length(interfaces) do
       size_length when size_length > 0 ->
 	interface = Enum.at(interfaces,0)

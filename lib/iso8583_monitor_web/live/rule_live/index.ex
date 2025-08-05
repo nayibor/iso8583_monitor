@@ -91,8 +91,5 @@ defmodule Iso8583MonitorWeb.RuleLive.Index do
   def handle_event("reload",_params, socket) do
     RulesServer.reload_rules()
     {:noreply,socket}
-
-  end
-  
-  
+  end  
 end

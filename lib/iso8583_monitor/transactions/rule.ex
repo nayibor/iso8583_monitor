@@ -1,4 +1,5 @@
 defmodule Iso8583Monitor.Transactions.Rule do
+  alias Iso8583Monitor.StringLua
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -7,7 +8,7 @@ defmodule Iso8583Monitor.Transactions.Rule do
     field :status, :boolean, default: false
     field :tag, :string
     field :description, :string
-    field :expression, :string
+    field :expression, StringLua
 
     timestamps(type: :utc_datetime)
   end

@@ -125,10 +125,10 @@ process_transaction({_,_,Msg}, S = #state{socket=_AcceptSocket,iso_message=Isom,
     end.
 
 
-%% @doc for sending information through the socket
--spec send(port(),[pos_integer()],port())->ok|{error,any()}.
-send(Socket, Str,Transport) ->
-    ok = Transport:send(Socket,Str).
+%% %% @doc for sending information through the socket
+%% -spec send(port(),[pos_integer()],port())->ok|{error,any()}.
+%% send(Socket, Str,Transport) ->
+%%     ok = Transport:send(Socket,Str).
 
 
 process_transaction_with_rule(Map_transaction,Rule_string) ->
