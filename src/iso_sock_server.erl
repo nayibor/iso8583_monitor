@@ -8,7 +8,7 @@
 -module(iso_sock_server).
 -behaviour(gen_server).
 -behaviour(ranch_protocol).
--record(state, {iso_message=[],socket,ref,transport,event_handler,bhead,spec_iso}). % the current socket
+-record(state, {iso_message=[],socket,ref,transport,bhead,spec_iso}). % the current socket
 
 
 %%for ranch stuff

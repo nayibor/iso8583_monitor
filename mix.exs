@@ -56,7 +56,9 @@ defmodule Iso8583Monitor.MixProject do
       {:ranch, "~> 2.2.0"},
       {:iso8583_erl, git: "https://github.com/nayibor/iso8583_erl.git", branch: "develop"},
       {:luerl, "~> 1.4"},
-      {:gproc, git: "https://github.com/uwiger/gproc", tag: "0.9.1"}
+      {:gproc, git: "https://github.com/uwiger/gproc", tag: "0.9.1"},
+      {:backoff,git: "https://github.com/ferd/backoff.git",tag: "1.1.6"}
+      
     ]
   end
 
