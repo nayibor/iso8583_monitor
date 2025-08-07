@@ -17,6 +17,9 @@
 %%for gen server stuff
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,code_change/3,handle_continue/2, terminate/2]).
 
+%%for exposing the lua transaction processing
+-export([process_transaction/1]).
+
 
 
 %% macros for messages received on socket
@@ -109,15 +112,8 @@ process_transaction({_,_,Msg}, S = #state{socket=_AcceptSocket,iso_message=Isom,
 		    Map_iso = iso8583_erl:unpack(Rest,Specification),
 		    %%io:format("~n message map received is ~p~n", [Map_iso]),
 		    Map_rules_processed = process_transaction(Map_iso),
-		    io:format("~n message map after rules processing is ~p~n", [Map_rules_processed]),
-		    %%for sending response to specific users captured by the rules
-		    %%Response_rules = yapp_test_lib_rules:process_rule_transaction(Map_iso),
+		    %%io:format("~n message map after rules processing is ~p~n", [Map_rules_processed]),
                     gproc:send({p, l,liveview_process},{interface_transaction,Map_rules_processed}),
-		    %%Iso_Response = iso8583_erl:pack(Map_iso,Specification),
-		    %%Final_size = iso8583_erl:get_size_send(Iso_Response,Bheader),
-		    %%_Final_socket_response = [Final_size,Iso_Response],
-		    %%io:format("~n echoing message back ~n",[]),	
-		    %%ok = send(AcceptSocket,Final_socket_response,Transport),
 		    {noreply, S#state{iso_message=[]}};
 		SizeafterHead when Len < SizeafterHead ->
 		    {noreply, S#state{iso_message=State_new}}
