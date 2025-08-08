@@ -39,3 +39,6 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+//this load the dashboard_app file contains startup behaviour
+//this means mainly the stuff for the mobile menu
+import "../vendor/dashboard_app.js"

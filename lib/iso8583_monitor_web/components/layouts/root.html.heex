@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
+    <.live_title suffix=" · Transaction Monitoring">
       <%= assigns[:page_title] || "Iso8583Monitor" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
@@ -12,27 +12,43 @@
     </script>
   </head>
   <body class="bg-white antialiased">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
-      <%= if @current_user do %>
+<header class="px-4 sm:px-6 lg:px-8">
+  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
+    <div class="flex items-center gap-4">
+      <a href="/">
+	<%= if @current_user do %>
+         <img src={~p"/images/logo.svg"} width="36" /> 	
+	<% else %>
+	<% end %>
+      </a>
+      <!--
+      <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
+        v<%= Application.spec(:phoenix, :vsn) %>
+      </p>
+      -->
+    </div>
+    <%= if @current_user do %>      
+    <div class="hidden items-center gap-4 font-semibold leading-6 text-zinc-900 lg:flex">
+      <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end font-normal">    
         <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          {@current_user.email}
+          <%= @current_user.email %>
         </li>
-        <li>
+       <li>
           <.link
             href={~p"/users/register"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-cyan"
           >
             Register
           </.link>
         </li>
-        <li>
+       <li>
           <.link
             href={~p"/transactions"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-cyan"
           >
             Transactions
           </.link>
-        </li>		
+       </li>
         <li>
           <.link
             href={~p"/interfaces"}
@@ -49,11 +65,10 @@
             Rules
           </.link>
         </li>	
-	
         <li>
           <.link
             href={~p"/users/settings"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-cyan"
           >
             Settings
           </.link>
@@ -62,22 +77,76 @@
           <.link
             href={~p"/users/log_out"}
             method="delete"
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-cyan"
           >
             Log out
           </.link>
         </li>
-      <% else %>
-        <li>
-          <.link
-            href={~p"/users/log_in"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Log in
+      </ul>
+    </div>
+      <!--this part is for the Hamburger menu -->
+      <button id="menu-btn" type="button" class="z-40 block hamburger lg:hidden focus:outline-none">
+	<span class="hamburger-top"></span>
+	<span class="hamburger-middle"></span>
+	<span class="hamburger-bottom"></span>
+      </button>
+      <!-- this part is for the Mobile Menu -->
+      <div id="menu" class="fixed inset-0 z-20 hidden flex-col items-center self-end w-full
+			    h-full m-h-screen px-6 py-1 pt-24 pb-4 tracking-widest text-white uppercase divide-y divide-gray-500 opacity-90 bg-darkViolet">
+	<div class="w-full py-3 text-center">
+	  <.link href={~p"/users/register"} class="text-[0.8125rem] leading-6  font-semibold hover:text-cyan">
+            Register
           </.link>
-        </li>
-      <% end %>
-    </ul>
-    <%= @inner_content %>
+        </div>
+	<div class="w-full py-3 text-center">
+          <.link href={~p"/transactions"} class="text-[0.8125rem] leading-6  font-semibold hover:text-cyan">
+            Transactions
+          </.link>
+	</div>
+	<div class="w-full py-3 text-center">
+          <.link href={~p"/interfaces"} class="text-[0.8125rem] leading-6  font-semibold hover:text-cyan">
+            Interfaces
+          </.link>
+	</div>	
+	<div class="w-full py-3 text-center">
+          <.link href={~p"/rules"} class="text-[0.8125rem] leading-6  font-semibold hover:text-cyan">
+            Rules
+          </.link>
+	</div>	
+
+	
+	<div class="w-full py-3 text-center">
+          <.link href={~p"/users/settings"} class="text-[0.8125rem] leading-6  font-semibold hover:text-cyan">
+            Settings
+          </.link>
+	</div>
+	<div class="w-full py-3 text-center">
+          <.link href={~p"/users/log_out"} method="delete" class="text-[0.8125rem] leading-6 font-semibold hover:text-cyan">
+            Log out
+          </.link>
+	</div>
+      </div>      
+      <% else %>
+      <!--this part is for the Hamburger menu but wont show  -->
+      <button id="menu-btn" type="button" class="hidden z-40 block hamburger lg:hidden focus:outline-none">
+	<span class="hamburger-top"></span>
+	<span class="hamburger-middle"></span>
+	<span class="hamburger-bottom"></span>
+      </button>
+      <!--this is for the log in button -->
+      <div class="items-center gap-4 font-semibold leading-6 text-zinc-900 md:flex">
+	<ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end font-normal">
+	  <li>
+            <.link
+              href={~p"/users/log_in"} class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-cyan">
+              Log In
+            </.link>
+          </li>
+	</ul>
+      </div>
+  <% end %>       
+  </div>
+</header>
+<%= @inner_content %>
   </body>
 </html>
