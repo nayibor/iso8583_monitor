@@ -42,7 +42,8 @@ To start your Phoenix server:
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
   * Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
   * You can create interfaces for receiving transactions and rules for colour coding transactions received
-  
+  * You can send sample financial transactions from your own interface to the created interfaces at the port specified
+     and they will be forwared to the frontend for quick view
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
