@@ -34,10 +34,15 @@ Web application,rule engine and tcp server built using below:
 
 To start your Phoenix server:
 
+  * Make sure you have elixir and postgres installed
+  * do a git clone of project ``git clone https://github.com/nayibor/iso8583_monitor.git``
+  *	change directory into iso8583_monitor project ``cd iso8583_monitor``
+  * edit database config details(host,username,password) in ``config/dev.exs``
   * Run `mix setup` to install and setup dependencies
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+  * Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+  * You can create interfaces for receiving transactions and rules for colour coding transactions received
+  
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
