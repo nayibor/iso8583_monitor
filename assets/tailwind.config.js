@@ -25,6 +25,7 @@ module.exports = {
       }
     },
   },
+    safelist: [{pattern: /bg-(primary|secondary|accent|neutral|info|success|warning|error|blue)/}],
   plugins: [
     require("@tailwindcss/forms"),
     // Allows prefixing tailwind classes with LiveView classes to add rules
