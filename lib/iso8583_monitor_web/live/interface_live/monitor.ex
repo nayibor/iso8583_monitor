@@ -24,7 +24,7 @@ defmodule Iso8583MonitorWeb.InterfaceLive.Monitor do
   @impl true
   def handle_info(_message = {:interface_transaction,map_transaction}, socket) do
     transaction_map_id_added = Map.put(map_transaction,:id,Ecto.UUID.generate())    
-    {:noreply,stream_insert(socket,:transactions,transaction_map_id_added,limit: -1 * Utils.get_page_size())}
+    {:noreply,stream_insert(socket,:transactions,transaction_map_id_added,at: 0,limit: -1 * Utils.get_page_size())}
   end
 
   @impl true

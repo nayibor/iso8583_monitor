@@ -90,6 +90,8 @@ defmodule Iso8583MonitorWeb.RuleLive.Index do
   ##this is for a search with a real value
   def handle_event("reload",_params, socket) do
     RulesServer.reload_rules()
-    {:noreply,socket}
+    {:noreply,
+     socket |> put_flash(:info, "Rules reloaded successfully")
+    }
   end  
 end

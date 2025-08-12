@@ -53,15 +53,24 @@ defmodule Iso8583MonitorWeb.InterfaceLive.Index do
   @impl true
   def handle_event("toggle", %{"id" => id}, socket) do
     interface = Interfaces.get_interface!(id)
+    message_flash = 
     case interface.status do
-     :true -> Interfaces.stop_interface(interface)
-     :false -> Interfaces.start_interface(interface)		
+      :true ->
+	Interfaces.stop_interface(interface)
+	"stopped"
+      :false ->
+	Interfaces.start_interface(interface)
+	"started"
     end
     interfaces = Interfaces.list_interfaces()
     {:noreply,
     socket
     |> assign(:page_data,Utils.paginate(1,length(interfaces)))
-    |> stream(:interfaces,interfaces,reset: true)}
+    |> stream(:interfaces,interfaces,reset: true)
+    |> put_flash(:info, "Interface #{message_flash} successfully")	
+
+    }
+    
   end
   
   @impl true

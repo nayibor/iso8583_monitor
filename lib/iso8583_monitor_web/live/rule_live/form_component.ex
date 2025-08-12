@@ -5,6 +5,13 @@ defmodule Iso8583MonitorWeb.RuleLive.FormComponent do
 
   @impl true
   def render(assigns) do
+    colours = [
+      {"Orange","orange"},{"Amber","amber"},{"Yellow","yellow"},{"Lime","lime"},
+      {"Green","green"},{"Emerald","emerald"},{"Teal","teal"},{"Sky","sky"},
+      {"Blue","blue"},{"Indigo","indigo"},{"Violet","violet"},{"Purple","purple"},
+      {"Pink","pink"},{"Rose","rose"},{"Slate","slate"},{"Gray","gray"},{"Zinc","zinc"}
+    ]
+    assigns = assign(assigns,colours: colours)
     ~H"""
     <div>
       <.header>
@@ -22,7 +29,7 @@ defmodule Iso8583MonitorWeb.RuleLive.FormComponent do
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:description]} type="textarea" label="Description" />
         <.input field={@form[:expression]} type="textarea" label="Expression" />
-        <.input field={@form[:tag]} type="text" label="Tag" />
+        <.input field={@form[:tag]} type="select" options={@colours} label="Monitor Colour" />
         <.input field={@form[:status]} type="checkbox" label="Status" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Rule</.button>

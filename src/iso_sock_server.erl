@@ -150,6 +150,6 @@ process_transaction(Map_transaction)->
 		      false -> Tag_list
 		  end
 	  end,[<<"">>],Enabled_rules),
-    Tag_join = lists:join(<<" ">>,Tag_list_agg),
+    Tag_join = lists:join(<<"">>,Tag_list_agg),
     Binary_list = binary:list_to_bin(Tag_join),
     maps:put(tag,Binary_list,Map_transaction).
