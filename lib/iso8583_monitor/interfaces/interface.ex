@@ -23,6 +23,7 @@ defmodule Iso8583Monitor.Interfaces.Interface do
     interface
     |> cast(attrs, [:name,:description,:pool_name,:pool_type,:address,:port,:status,:specification,:header_size,:max_connections])
     |> validate_required([:name,:description,:pool_name,:pool_type,:address,:port,:status,:specification,:header_size,:max_connections])
+    ##|> validate_number(:max_connections,less_than_equal_to: 100)
     |> unique_constraint(:pool_name)
   end
 end

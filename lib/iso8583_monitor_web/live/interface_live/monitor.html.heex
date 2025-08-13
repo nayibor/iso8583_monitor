@@ -2,7 +2,6 @@
   Transactions
 </.header>
 
-
 <.transaction_table id="transactions" rows={@streams.transactions} >
   <:col :let={{_id, transaction}} label="Pan">{transaction[2]}</:col>
   <:col :let={{_id, transaction}} label="Type">{transaction[3]}</:col>
