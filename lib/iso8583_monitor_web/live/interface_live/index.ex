@@ -56,18 +56,18 @@ defmodule Iso8583MonitorWeb.InterfaceLive.Index do
     message_flash = 
     case interface.status do
       :true ->
-	Interfaces.stop_interface(interface)
-	"stopped"
+	result = Interfaces.stop_interface(interface)
+	if(result == :ok, do: "Interface stopped succesfully", else: "Error stopping Interface")	
       :false ->
-	Interfaces.start_interface(interface)
-	"started"
+	result = Interfaces.start_interface(interface)
+	if(result == :ok, do: "Interface started succesfully", else: "Error starting Interface")	
     end
     interfaces = Interfaces.list_interfaces()
     {:noreply,
     socket
     |> assign(:page_data,Utils.paginate(1,length(interfaces)))
     |> stream(:interfaces,interfaces,reset: true)
-    |> put_flash(:info, "Interface #{message_flash} successfully")	
+    |> put_flash(:info, message_flash)	
 
     }
     

@@ -53,6 +53,7 @@ defmodule Iso8583Monitor.Interfaces do
     start_interface_by_type(interface.pool_type,interface)
   end
 
+  
   def start_interface_by_type(:server,interface) do
     specification_decoded = convert_spec(interface.specification)
     specification = :iso8583_erl.load_specification_using_data(specification_decoded)
@@ -61,10 +62,15 @@ defmodule Iso8583Monitor.Interfaces do
       {:ok,_ } ->
 	update_interface(interface,%{id: interface.id,status: :true})
 	Logger.info("**interface #{interface.name} started succesfully**")
-      {:error,term } -> Logger.error(term )    
+	:ok
+      result = {:error,term } ->
+	Logger.info("**error starting interface**")
+	Logger.error(term )
+	result
     end    
   end
 
+  
   def start_interface_by_type(:client,interface) do
     specification_decoded = convert_spec(interface.specification)
     specification = :iso8583_erl.load_specification_using_data(specification_decoded)
@@ -73,38 +79,59 @@ defmodule Iso8583Monitor.Interfaces do
       server_port: interface.port,
       init_options: [bhead: interface.header_size,spec_iso: specification,backoff: 5000]
     ]
-    {:ok,pool_supervisor}  = DynamicSupervisor.start_child(Iso8583Monitor.DynamicSupervisor,{DynamicSupervisor, name: {:via, :gproc, {:n, :l, interface.pool_name}}, strategy: :one_for_one})
-    spec = %{id: :monitor_client_tcp_socket_supervisor, start: {:iso_genst, :start_link,[worker_data]}}
-    Enum.map(1 .. interface.max_connections, fn _ -> {:ok,_} = DynamicSupervisor.start_child(pool_supervisor, spec) end)
-    update_interface(interface,%{id: interface.id,status: :true})
-    Logger.info("**interface #{interface.name} started succesfully**")
+    case DynamicSupervisor.start_child(Iso8583Monitor.DynamicSupervisor,{DynamicSupervisor, name: {:via, :gproc, {:n, :l, interface.pool_name}}, strategy: :one_for_one}) do
+      {:ok,pool_supervisor} ->
+	spec = %{id: :monitor_client_tcp_socket_supervisor, start: {:iso_genst, :start_link,[worker_data]}}
+	Enum.map(1 .. interface.max_connections, fn _ -> {:ok,_} = DynamicSupervisor.start_child(pool_supervisor, spec) end)
+	update_interface(interface,%{id: interface.id,status: :true})
+	Logger.info("**interface #{interface.name} started succesfully**")
+	:ok
+      result = {:error,term}->
+	Logger.info("**error starting interface**")
+	Logger.error(term )
+	result
+    end
   end
 
+  
   def start_interfaces() do
     Logger.info("**starting interface servers**")
     interfaces = list_interfaces()
     Enum.map(interfaces,fn interface -> start_interface(interface) end)
   end  
+
   
   def stop_interface(interface) do
     stop_interface_by_type(interface.pool_type,interface)
   end
 
+  
   def stop_interface_by_type(:server,interface) do
     resp = :ranch.stop_listener(interface.pool_name)
     case resp do
       :ok ->
 	update_interface(interface,%{id: interface.id,status: false})
 	Logger.info("interface #{interface.name} stopped succesfully")
-      {:error,_} -> Logger.error("interface not found")		
+	:ok
+      result = {:error,term} ->
+	Logger.error("interface not found")
+	Logger.error(term )	
+	result
     end
   end
 
 
   def stop_interface_by_type(:client,interface) do
-    :ok = DynamicSupervisor.terminate_child(Iso8583Monitor.DynamicSupervisor,:gproc.lookup_local_name(interface.pool_name))
-    update_interface(interface,%{id: interface.id,status: false})
-    Logger.info("interface #{interface.name} stopped succesfully")    
+    case DynamicSupervisor.terminate_child(Iso8583Monitor.DynamicSupervisor,:gproc.lookup_local_name(interface.pool_name)) do
+      :ok ->
+	update_interface(interface,%{id: interface.id,status: false})
+	Logger.info("interface #{interface.name} stopped succesfully")
+	:ok
+      result = {:error,term} ->
+	Logger.error("interface not found")
+	Logger.error(term)	
+	result
+    end
   end
 
   
