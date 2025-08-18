@@ -763,11 +763,12 @@ defmodule Iso8583MonitorWeb.CoreComponents do
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
           class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
         >
-          <tr :for={row = {_rid,%{tag: tag} = _rv} <- @rows} id={@row_id && @row_id.(row)} class="group">
+          <tr :for={row = {_rid,%{tag: tag} = _rv} <- @rows} id={@row_id && @row_id.(row)} class="group" >
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
-              class={["bg-#{tag}-500","relative p-0", @row_click && "hover:cursor-pointer"]}
+              class={["relative p-0", @row_click && "hover:cursor-pointer"]}
+	      style={["background-color:#{tag};"]}
             >
               <div class="block py-4 pr-6">
                 <span class="absolute -inset-y-px right-0 -left-4  sm:rounded-l-xl" />
