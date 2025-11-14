@@ -9,3 +9,8 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+alias Iso8583Monitor.Accounts
+##create a default admin user whom will have acess to the system
+##this user can be used for creating other accounts
+
+{:ok,user} = Accounts.register_user %{email: "admin@monitor.com",password: "qwert12345!@#$%"}

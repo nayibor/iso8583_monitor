@@ -1,0 +1,34 @@
+find below samples of lua rule expressions for creating rules
+
+### expired card expression
+
+function main(iso_transaction)
+if iso_transaction[39] == "33" then
+return true
+else
+return false
+end
+end
+
+
+### reconcile error  expression
+
+function main(iso_transaction)
+if iso_transaction[39] == "95" then
+return true
+else
+return false
+end
+end
+
+
+### succesful transaction expression
+
+function main(iso_transaction)
+if iso_transaction[39] == "00" then
+return true
+else
+return false
+end
+end
+
