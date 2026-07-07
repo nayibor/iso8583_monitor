@@ -1,7 +1,8 @@
-find below samples of lua rule expressions for creating rules
+find below samples of lua rule expressions for creating rules.
+the function clause must be placed in the expression field when creating an expression for a rule.
 
 ### expired card expression
-`
+
 function main(iso_transaction)
 if iso_transaction[39] == "33" then
 return true
@@ -9,10 +10,10 @@ else
 return false
 end
 end
-``
+
 
 ### reconcile error  expression
-`
+
 function main(iso_transaction)
 if iso_transaction[39] == "95" then
 return true
@@ -20,14 +21,24 @@ else
 return false
 end
 end
-`
+
 
 ### succesful transaction expression
-`
 function main(iso_transaction)
 if iso_transaction[39] == "00" then
 return true
 else
 return false
 end
-end``
+end
+
+
+### balance enquiry  expression
+function main(iso_transaction)
+if iso_transaction[3] == "310000" then
+return true
+else
+return false
+end
+end
+
