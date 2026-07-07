@@ -46,6 +46,9 @@ To start your Phoenix server:
   * You can send sample financial transactions from your own interface to the created interfaces at the port specified
      and they will be forwared to the frontend for quick view
 
+ To view examples of lua expression used for creating rules and also sample specification file when creating interfaces check examples folder.
+ 
+
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
 ## Learn more
